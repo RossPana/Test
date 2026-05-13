@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confronto Spettri XRF AMD</title>
+    <!-- Caricamento della libreria grafica Chart.js tramite link sicuro CDN -->
+    <script src="cloudflare.com"></script>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: #ffffff; 
+            padding: 20px;
+            color: #333;
+        }
+        .chart-container {
+            position: relative;
+            max-width: 750px;
+            margin: 0 auto 25px auto;
+        }
+        .instruction {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #result { 
+            max-width: 710px;
+            margin: 0 auto;
+            padding: 18px; 
+            border-left: 6px solid #e0e0e0; 
+            background: #f8f9fa; 
+            font-size: 15px; 
+            line-height: 1.6;
+            min-height: 50px; 
+            border-radius: 0 6px 6px 0;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chart-container">
+        <h2 style="text-align: center; margin-bottom: 5px;">Confronto Multi-Spettro XRF (AMD 1-6)</h2>
+        <p class="instruction">Fai clic su un indicatore (punto colorato) nel grafico per analizzare l'elemento e lo spettro selezionato.</p>
+        <canvas id="xrfMultiScatterChart"></canvas>
+    </div>
+
+    <div id="result">Seleziona un indicatore sul grafico per visualizzare i dettagli elementari del campione.</div>
+
+    <script>
+        // Database basato sui booklet XRF standard (energie in keV delle linee principali)
+        const elementInfo = {
+            '3.44': { name: 'Stagno (Sn)', desc: 'Rilevato a 3.44 keV (Linea Lα). Segnala componenti di leghe bronzee o pigmenti gialli storici.' },
+            '8.64': { name: 'Zinco (Zn)', desc: 'Rilevato a 8.64 keV (Linea Kα). Tipico del Bianco di Zinco, diffuso nelle opere d\'arte dall\'Ottocento.' },
+            '9.71': { name: 'Oro (Au)', desc: 'Rilevato a 9.71 keV (Linea Lα). Conferma la presenza di dorature o foglia d\'oro zecchino sul reperto.' },
+            '10.55': { name: 'Piombo (Pb)', desc: 'Rilevato a 10.55 keV (Linea Lα). Indica l\'uso massiccio di Bianco di Piombo (biacca) negli strati pittorici antichi.' }
+        };
+
+        // Avvio sicuro del grafico all'apertura della pagina
+        window.onload = function() {
+            const ctx = document.getElementById('xrfMultiScatterChart').getContext('2d');
+
+            const xrfChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'AMD 1',
+                            data: [{x: 3.44, y: 200}, {x: 8.64, y: 350}, {x: 9.71, y: 880}, {x: 10.55, y: 400}],
+                            borderColor: '#e74c3c', backgroundColor: '#e74c3c', showLine: true, borderWidth: 2, pointRadius: 7, pointHoverRadius: 11
+                        },
+                        {
+                            label: 'AMD 2',
+                            data: [{x: 3.44, y: 650}, {x: 8.64, y: 150}, {x: 9.71, y: 410}, {x: 10.55, y: 920}],
+                            borderColor: '#3498db', backgroundColor: '#3498db', showLine: true, borderWidth: 2, pointRadius: 7, pointHoverRadius: 11
+                        },
+                        {
+                            label: 'AMD 3',
+                            data: [{x: 3.44, y: 310}, {x: 8.64, y: 780}, {x: 9.71, y: 220}, {x: 10.55, y: 510}],
+                            borderColor: '#2ecc71', backgroundColor: '#2ecc71', showLine: true, borderWidth: 2, pointRadius: 7, pointHoverRadius: 11
+                        },
+                        {
+                            label: 'AMD 4',
+                            data: [{x: 3.44, y: 120}, {x: 8.64, y: 420}, {x: 9.71, y: 610}, {x: 10.55, y: 710}],
+                            borderColor: '#f1c40f', backgroundColor: '#f1c40f', showLine: true, borderWidth: 2, pointRadius: 7, pointHoverRadius: 11
+                        },
+                        {
+                            label: 'AMD 5',
+                            data: [{x: 3.44, y: 850}, {x: 8.64, y: 290}, {x: 9.71, y: 130}, {x: 10.55, y: 320}],
+                            borderColor: '#9b59b6', backgroundColor: '#9b59b6', showLine: true, borderWidth: 2, pointRadius: 7, pointHoverRadius: 11
+                        },
+                        {
+                            label: 'AMD 6',
+                            data: [{x: 3.44, y: 430}, {x: 8.64, y: 610}, {x: 9.71, y: 520}, {x: 10.55, y: 150}],
+                            borderColor: '#e67e22', backgroundColor: '#e67e22', showLine: true, borderWidth: 2, pointRadius: 7, pointHoverRadius: 11
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Energia (keV)', font: { weight: 'bold' } },
+                            min: 0, max: 15
+                        },
+                        y: {
+                            title: { display: true, text: 'Intensità (Conteggi)', font: { weight: 'bold' } },
+                            min: 0, max: 1000
+                        }
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    // Gestione avanzata dei clic sui punti
+                    onClick: (e, elements) => {
+                        if (elements.length > 0) {
+                            const datasetIndex = elements[0].datasetIndex;
+                            const dataIndex = elements[0].index;
+                            
+                            const datasetLabel = xrfChart.data.datasets[datasetIndex].label;
+                            const pointData = xrfChart.data.datasets[datasetIndex].data[dataIndex];
+                            
+                            const info = elementInfo[pointData.x];
+                            const datasetColor = xrfChart.data.datasets[datasetIndex].borderColor;
+                            
+                            if (info) {
+                                const resBlock = document.getElementById('result');
+                                resBlock.innerHTML = `<strong>Spettro: ${datasetLabel}</strong><br><strong>Elemento identificato:</strong> ${info.name} (Valore misurato: ${pointData.y} conteggi)<br>${info.desc}`;
+                                resBlock.style.borderLeftColor = datasetColor;
+                            }
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
