@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spettro Reale XRF AMD</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #ffffff; padding: 20px; color: #333; }
+        .chart-container { max-width: 800px; margin: 0 auto 25px auto; background: #fff; padding: 10px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .instruction { font-size: 14px; color: #666; text-align: center; margin-bottom: 20px; }
+        .legend { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; font-weight: bold; font-size: 14px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        .legend-line { width: 25px; height: 3px; display: inline-block; }
+        .interactive-point { cursor: pointer; transition: transform 0.2s; }
+        .interactive-point:hover { transform: scale(1.5); transform-origin: center; }
+        #result { max-width: 760px; margin: 0 auto; padding: 18px; border-left: 6px solid #e0e0e0; background: #f8f9fa; font-size: 15px; line-height: 1.6; min-height: 50px; border-radius: 0 6px 6px 0; transition: all 0.3s ease; }
+        .grid-line { stroke: #e5e5e5; stroke-dasharray: 4; stroke-width: 1; }
+        .axis-line { stroke: #333333; stroke-width: 2; }
+        .axis-text { font-size: 12px; fill: #555; font-weight: bold; }
+        .spectrum-path { fill: none; stroke-width: 2.5; transition: opacity 0.2s; }
+    </style>
+</head>
+<body>
+
+    <div class="chart-container">
+        <h2 style="text-align: center; margin-bottom: 5px; margin-top:5px;">Spettrometria XRF - Curve di Emissione Reali</h2>
+        <p class="instruction">Clicca sui cerchietti colorati in cima ai picchi per identificare l'elemento chimico.</p>
+        
+        <!-- Legenda Spettri -->
+        <div class="legend">
+            <div class="legend-item" onclick="toggleSpectrum(0)"><span class="legend-line" style="background:#e74c3c;"></span> AMD 1</div>
+            <div class="legend-item" onclick="toggleSpectrum(1)"><span class="legend-line" style="background:#3498db;"></span> AMD 2</div>
+            <div class="legend-item" onclick="toggleSpectrum(2)"><span class="legend-line" style="background:#2ecc71;"></span> AMD 3</div>
+            <div class="legend-item" onclick="toggleSpectrum(3)"><span class="legend-line" style="background:#f1c40f;"></span> AMD 4</div>
+            <div class="legend-item" onclick="toggleSpectrum(4)"><span class="legend-line" style="background:#9b59b6;"></span> AMD 5</div>
+            <div class="legend-item" onclick="toggleSpectrum(5)"><span class="legend-line" style="background:#e67e22;"></span> AMD 6</div>
+        </div>
+
+        <!-- Grafico Disegnato in SVG Nativo -->
+        <svg viewBox="0 0 800 450" width="100%" height="100%">
+            <!-- Linee di Griglia Orizzontali (Intensità) -->
+            <line x1="70" y1="50" x2="750" y2="50" class="grid-line" />
+            <text x="35" y="55" class="axis-text">1000</text>
+            <line x1="70" y1="137" x2="750" y2="137" class="grid-line" />
+            <text x="42" y="142" class="axis-text">750</text>
+            <line x1="70" y1="225" x2="750" y2="225" class="grid-line" />
+            <text x="42" y="230" class="axis-text">500</text>
+            <line x1="70" y1="312" x2="750" y2="312" class="grid-line" />
+            <text x="42" y="317" class="axis-text">250</text>
+            <line x1="70" y1="400" x2="750" y2="400" class="grid-line" />
+            <text x="50" y="405" class="axis-text">0</text>
+            <text x="15" y="210" class="axis-text" transform="rotate(-90 15 210)">Intensità (Conteggi)</text>
+
+            <!-- Linee di Griglia Verticali (Energia) -->
+            <line x1="70" y1="50" x2="70" y2="400" class="axis-line" />
+            <line x1="240" y1="50" x2="240" y2="400" class="grid-line" />
+            <text x="235" y="420" class="axis-text">3.44</text>
+            <line x1="475" y1="50" x2="475" y2="400" class="grid-line" />
+            <text x="470" y="420" class="axis-text">8.64</text>
+            <line x1="524" y1="50" x2="524" y2="400" class="grid-line" />
+            <text x="519" y="420" class="axis-text">9.71</text>
+            <line x1="562" y1="50" x2="562" y2="400" class="grid-line" />
+            <text x="557" y="420" class="axis-text">10.55</text>
+            <line x1="750" y1="50" x2="750" y2="400" class="axis-line" />
+            <text x="745" y="420" class="axis-text">15</text>
+            <text x="400" y="442" class="axis-text">Energia (keV)</text>
+            <line x1="70" y1="400" x2="750" y2="400" class="axis-line" />
+
+            <!-- I 6 Spettri generati come tracciati vettoriali nativi -->
+            <path id="spec0" class="spectrum-path" stroke="#e74c3c" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 355 L 240 331 L 250 358 L 260 366 L 310 367 L 360 368 L 410 368 L 450 361 L 460 330 L 475 264 L 490 339 L 500 362 L 510 320 L 524 53 L 535 240 L 545 348 L 555 280 L 562 214 L 575 329 L 590 367 L 640 369 L 690 370 L 750 370" />
+            <path id="spec1" class="spectrum-path" stroke="#3498db" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 252 L 240 137 L 250 263 L 260 366 L 310 367 L 360 368 L 410 368 L 450 367 L 460 362 L 475 330 L 490 365 L 500 368 L 510 360 L 524 260 L 535 348 L 545 365 L 555 120 L 562 34 L 575 220 L 590 361 L 640 369 L 690 370 L 750 370" />
+            <path id="spec2" class="spectrum-path" stroke="#2ecc71" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 340 L 240 311 L 250 345 L 260 366 L 310 367 L 360 368 L 410 368 L 450 300 L 460 180 L 475 87 L 490 200 L 500 340 L 510 361 L 524 336 L 535 365 L 545 367 L 555 250 L 562 195 L 575 311 L 590 366 L 640 369 L 690 370 L 750 370" />
+            <path id="spec3" class="spectrum-path" stroke="#f1c40f" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 361 L 240 358 L 250 363 L 260 366 L 310 367 L 360 368 L 410 368 L 450 355 L 460 320 L 475 235 L 490 330 L 500 360 L 510 300 L 524 163 L 535 295 L 545 340 L 555 190 L 562 142 L 575 270 L 590 358 L 640 369 L 690 370 L 750 370" />
+            <path id="spec4" class="spectrum-path" stroke="#9b59b6" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 200 L 240 71 L 250 215 L 260 366 L 310 367 L 360 368 L 410 368 L 450 365 L 460 350 L 475 293 L 490 358 L 500 368 L 510 366 L 524 361 L 535 368 L 545 368 L 555 310 L 562 262 L 575 340 L 590 366 L 640 369 L 690 370 L 750 370" />
+            <path id="spec5" class="spectrum-path" stroke="#e67e22" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 320 L 240 252 L 250 325 L 260 366 L 310 367 L 360 368 L 410 368 L 450 260 L 460 180 L 475 149 L 490 220 L 500 345 L 510 300 L 524 195 L 535 290 L 545 362 L 555 360 L 562 331 L 575 363 L 590 368 L 640 369 L 690 370 L 750 370" />
+
+            <!-- Punti Interattivi Cliccabili -->
+            <!-- Stagno -->
+            <circle class="interactive-point spec-pt0" cx="240" cy="331" r="6" fill="#e74c3c" onclick="showXRFInfo('AMD 1', 'Sn')" />
+            <circle class="interactive-point spec-pt1" cx="240" cy="137" r="6" fill="#3498db" onclick="showXRFInfo('AMD 2', 'Sn')" />
+            <circle class="interactive-point spec-pt2" cx="240" cy="311" r="6" fill="#2ecc71" onclick="showXRFInfo('AMD 3', 'Sn')" />
+            <circle class="interactive-point spec-pt4" cx="240" cy="71" r="6" fill="#9b59b6" onclick="showXRFInfo('AMD 5', 'Sn')" />
+            <circle class="interactive-point spec-pt5" cx="240" cy="252" r="6" fill="#e67e22" onclick="showXRFInfo('AMD 6', 'Sn')" />
+            
+            <!-- Zinco -->
+            <circle class="interactive-point spec-pt0" cx="475" cy="264" r="6" fill="#e74c3c" onclick="showXRFInfo('AMD 1', 'Zn')" />
+            <circle class="interactive-point spec-pt2" cx="475" cy="87" r="6" fill="#2ecc71" onclick="showXRFInfo('AMD 3', 'Zn')" />
+            <circle class="interactive-point spec-pt3" cx="475" cy="235" r="6" fill="#f1c40f" onclick="showXRFInfo('AMD 4', 'Zn')" />
+            <circle class="interactive-point spec-pt5" cx="475" cy="149" r="6" fill="#e67e22" onclick="showXRFInfo('AMD 6', 'Zn')" />
+            
+            <!-- Oro -->
+            <circle class="interactive-point spec-pt0" cx="524" cy="53" r="6" fill="#e74c3c" onclick="showXRFInfo('AMD 1', 'Au')" />
+            <circle class="interactive-point spec-pt1" cx="524" cy="260" r="6" fill="#3498db" onclick="showXRFInfo('AMD 2', 'Au')" />
+            <circle class="interactive-point spec-pt3" cx="524" cy="163" r="6" fill="#f1c40f" onclick="showXRFInfo('AMD 4', 'Au')" />
+            <circle class="interactive-point spec-pt5" cx="524" cy="195" r="6" fill="#e67e22" onclick="showXRFInfo('AMD 6', 'Au')" />
+            
+            <!-- Piombo -->
+            <circle class="interactive-point spec-pt0" cx="562" cy="214" r="6" fill="#e74c3c" onclick="showXRFInfo('AMD 1', 'Pb')" />
+            <circle class="interactive-point spec-pt1" cx="562" cy="34" r="6" fill="#3498db" onclick="showXRFInfo('AMD 2', 'Pb')" />
+            <circle class="interactive-point spec-pt2" cx="562" cy="195" r="6" fill="#2ecc71" onclick="showXRFInfo('AMD 3', 'Pb')" />
+            <circle class="interactive-point spec-pt3" cx="562" cy="142" r="6" fill="#f1c40f" onclick="showXRFInfo('AMD 4', 'Pb')" />
+            <circle class="interactive-point spec-pt4" cx="562" cy="262" r="6" fill="#9b59b6" onclick="showXRFInfo('AMD 5', 'Pb')" />
+        </svg>
+    </div>
+
+    <div id="result">Fai clic sul cerchietto colorato di un picco per avviare il riconoscimento del materiale archeometrico.</div>
+
+    <script>
+        const elementData = {
+            'Sn': { name: 'Stagno (Sn)', energy: '3.44 keV', desc: 'Linea Lα. Tipico componente del bronzo impiegato per aureola e sostegno.' },
+            'Zn': { name: 'Zinco (Zn)', energy: '8.64 keV', desc: 'Linea Kα. Presente in percentuali oltre il 5% per la produzione di ottone.' },
+            'Au': { name: 'Oro (Au)', energy: '9.71 keV', desc: 'Linea Lα. Evidenzia l\'applicazione di foglie metalliche preziose o dorature a missione.' },
+            'Pb': { name: 'Piombo (Pb)', energy: '10.55 keV', desc: 'Linea Lα. Elemento utilizzato per abbassare la temperatura di fusione del rame, e quindi produrre bronzo.' }
+        };
+
+        const colors = { 'AMD 1': '#e74c3c', 'AMD 2': '#3498db', 'AMD 3': '#2ecc71', 'AMD 4': '#f1c40f', 'AMD 5': '#9b59b6', 'AMD 6': '#e67e22' };
+
+        function showXRFInfo(spectrumName, elementKey) {
+            const info = elementData[elementKey];
+            const resBlock = document.getElementById('result');
+            resBlock.innerHTML = `<strong>Spettro attivo: ${spectrumName}</strong><br><strong>Elemento identificato:</strong> ${info.name} (Picco standard a ${info.energy})<br>${info.desc}`;
+            resBlock.style.borderLeftColor = colors[spectrumName];
+        }
+
+        let states = [true, true, true, true, true, true];
+        function toggleSpectrum(index) {
+            states[index] = !states[index];
+            const path = document.getElementById('spec' + index);
+            const points = document.querySelectorAll('.spec-pt' + index);
+            const opacity = states[index] ? '1' : '0.1';
+            
+            path.style.opacity = opacity;
+            points.forEach(p => p.style.opacity = opacity);
+        }
+    </script>
+</body>
+</html>
