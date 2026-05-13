@@ -66,7 +66,7 @@
             <text x="400" y="442" class="axis-text">Energia (keV)</text>
             <line x1="70" y1="400" x2="750" y2="400" class="axis-line" />
 
-            <!-- I 6 Spettri generati come tracciati vettoriali nativi (Forma a Campana di Gauss + Fondo XRF) -->
+            <!-- I 6 Spettri generati come tracciati vettoriali nativi -->
             <path id="spec0" class="spectrum-path" stroke="#e74c3c" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 355 L 240 331 L 250 358 L 260 366 L 310 367 L 360 368 L 410 368 L 450 361 L 460 330 L 475 264 L 490 339 L 500 362 L 510 320 L 524 53 L 535 240 L 545 348 L 555 280 L 562 214 L 575 329 L 590 367 L 640 369 L 690 370 L 750 370" />
             <path id="spec1" class="spectrum-path" stroke="#3498db" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 252 L 240 137 L 250 263 L 260 366 L 310 367 L 360 368 L 410 368 L 450 367 L 460 362 L 475 330 L 490 365 L 500 368 L 510 360 L 524 260 L 535 348 L 545 365 L 555 120 L 562 34 L 575 220 L 590 361 L 640 369 L 690 370 L 750 370" />
             <path id="spec2" class="spectrum-path" stroke="#2ecc71" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 340 L 240 311 L 250 345 L 260 366 L 310 367 L 360 368 L 410 368 L 450 300 L 460 180 L 475 87 L 490 200 L 500 340 L 510 361 L 524 336 L 535 365 L 545 367 L 555 250 L 562 195 L 575 311 L 590 366 L 640 369 L 690 370 L 750 370" />
@@ -74,23 +74,26 @@
             <path id="spec4" class="spectrum-path" stroke="#9b59b6" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 200 L 240 71 L 250 215 L 260 366 L 310 367 L 360 368 L 410 368 L 450 365 L 460 350 L 475 293 L 490 358 L 500 368 L 510 366 L 524 361 L 535 368 L 545 368 L 555 310 L 562 262 L 575 340 L 590 366 L 640 369 L 690 370 L 750 370" />
             <path id="spec5" class="spectrum-path" stroke="#e67e22" d="M 70 334 L 120 351 L 170 361 L 220 364 L 230 320 L 240 252 L 250 325 L 260 366 L 310 367 L 360 368 L 410 368 L 450 260 L 460 180 L 475 149 L 490 220 L 500 345 L 510 300 L 524 195 L 535 290 L 545 362 L 555 360 L 562 331 L 575 363 L 590 368 L 640 369 L 690 370 L 750 370" />
 
-            <!-- Punti Interattivi Cliccabili posizionati sui vertici dei picchi -->
+            <!-- Punti Interattivi Cliccabili -->
             <!-- Stagno -->
             <circle class="interactive-point spec-pt0" cx="240" cy="331" r="6" fill="#e74c3c" onclick="showXRFInfo('AMD 1', 'Sn')" />
             <circle class="interactive-point spec-pt1" cx="240" cy="137" r="6" fill="#3498db" onclick="showXRFInfo('AMD 2', 'Sn')" />
             <circle class="interactive-point spec-pt2" cx="240" cy="311" r="6" fill="#2ecc71" onclick="showXRFInfo('AMD 3', 'Sn')" />
             <circle class="interactive-point spec-pt4" cx="240" cy="71" r="6" fill="#9b59b6" onclick="showXRFInfo('AMD 5', 'Sn')" />
             <circle class="interactive-point spec-pt5" cx="240" cy="252" r="6" fill="#e67e22" onclick="showXRFInfo('AMD 6', 'Sn')" />
+            
             <!-- Zinco -->
             <circle class="interactive-point spec-pt0" cx="475" cy="264" r="6" fill="#e74c3c" onclick="showXRFInfo('AMD 1', 'Zn')" />
             <circle class="interactive-point spec-pt2" cx="475" cy="87" r="6" fill="#2ecc71" onclick="showXRFInfo('AMD 3', 'Zn')" />
             <circle class="interactive-point spec-pt3" cx="475" cy="235" r="6" fill="#f1c40f" onclick="showXRFInfo('AMD 4', 'Zn')" />
             <circle class="interactive-point spec-pt5" cx="475" cy="149" r="6" fill="#e67e22" onclick="showXRFInfo('AMD 6', 'Zn')" />
+            
             <!-- Oro -->
             <circle class="interactive-point spec-pt0" cx="524" cy="53" r="6" fill="#e74c3c" onclick="showXRFInfo('AMD 1', 'Au')" />
             <circle class="interactive-point spec-pt1" cx="524" cy="260" r="6" fill="#3498db" onclick="showXRFInfo('AMD 2', 'Au')" />
             <circle class="interactive-point spec-pt3" cx="524" cy="163" r="6" fill="#f1c40f" onclick="showXRFInfo('AMD 4', 'Au')" />
             <circle class="interactive-point spec-pt5" cx="524" cy="195" r="6" fill="#e67e22" onclick="showXRFInfo('AMD 6', 'Au')" />
+            
             <!-- Piombo -->
             <circle class="interactive-point spec-pt0" cx="562" cy="214" r="6" fill="#e74c3c" onclick="showXRFInfo('AMD 1', 'Pb')" />
             <circle class="interactive-point spec-pt1" cx="562" cy="34" r="6" fill="#3498db" onclick="showXRFInfo('AMD 2', 'Pb')" />
@@ -103,7 +106,6 @@
     <div id="result">Fai clic sul cerchietto colorato di un picco per avviare il riconoscimento del materiale archeometrico.</div>
 
     <script>
-        // Database dei tuoi testi storici approvati
         const elementData = {
             'Sn': { name: 'Stagno (Sn)', energy: '3.44 keV', desc: 'Linea Lα. Tipico componente del bronzo impiegato per aureola e sostegno.' },
             'Zn': { name: 'Zinco (Zn)', energy: '8.64 keV', desc: 'Linea Kα. Presente in percentuali oltre il 5% per la produzione di ottone.' },
@@ -113,7 +115,6 @@
 
         const colors = { 'AMD 1': '#e74c3c', 'AMD 2': '#3498db', 'AMD 3': '#2ecc71', 'AMD 4': '#f1c40f', 'AMD 5': '#9b59b6', 'AMD 6': '#e67e22' };
 
-        // Mostra le informazioni al click
         function showXRFInfo(spectrumName, elementKey) {
             const info = elementData[elementKey];
             const resBlock = document.getElementById('result');
@@ -121,7 +122,6 @@
             resBlock.style.borderLeftColor = colors[spectrumName];
         }
 
-        // Funzione opzionale: cliccando sul nome in legenda nascondi/mostri lo spettro
         let states = [true, true, true, true, true, true];
         function toggleSpectrum(index) {
             states[index] = !states[index];
